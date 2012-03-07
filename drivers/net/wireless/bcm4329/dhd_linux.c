@@ -61,6 +61,9 @@
 #include <dhd_proto.h>
 #include <dhd_dbg.h>
 #include <wl_iw.h>
+#ifdef CUSTOM_MAC
+#include <custom.h>
+#endif
 #ifdef CONFIG_HAS_WAKELOCK
 #include <linux/wakelock.h>
 #endif
@@ -123,9 +126,13 @@ int wifi_get_mac_addr(unsigned char *buf)
 	DHD_TRACE(("%s\n", __FUNCTION__));
 	if (!buf)
 		return -EINVAL;
+#ifdef CUSTOM_MAC
+	return custom_get_mac_addr(buf);
+#else
 	if (wifi_control_data && wifi_control_data->get_mac_addr) {
 		return wifi_control_data->get_mac_addr(buf);
 	}
+#endif
 	return -EOPNOTSUPP;
 }
 
